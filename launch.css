@@ -2,3 +2,5 @@
 #launch>img{object-fit:cover;object-position:center center}#launch.leaving{transition:opacity .45s}.room-eye-layer{position:absolute;pointer-events:none;z-index:1;display:none}.room-view:not(.plans-open):not(.agent-open) .room-eye-layer{display:block}
 
 
+
+#launch .launch-panel{padding-top:3cqw}#launch .launch-transfer{font-size:2.15cqw;margin:1cqw 0;color:#c7d8f2}#launch .launch-tagline{margin-top:1.2cqw}
