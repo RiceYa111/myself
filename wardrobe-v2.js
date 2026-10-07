@@ -47,6 +47,6 @@ window.addEventListener('click',e=>{const el=e.target.closest('[data-action]');i
 wearSave=function(){const pending=WC.slots.map(s=>wearItem(wearDraft[s])).filter(i=>i&&!wearOwned(i.id));if(pending.length){wearPurchase={items:pending,selected:new Set(pending.map(i=>i.id)),preview:{...wearDraft},rid:M.id()};wearPurchaseModal();return}if(transact('saveOutfit',{outfit:wearDraft})){wearDraft=savedWear();render();toast('穿搭已保存。主页保留默认居家装扮。')}};
 const v2Render=render;render=function(){document.querySelector('#phone').classList.toggle('wardrobe-shop',route==='shop');v2Render()};
 // Preload source layers so switching garments does not briefly leave a floating head.
-// Wardrobe images load on demand when its view is opened.
+for(const file of ['home','standing',...Array.from({length:5},(_,i)=>'set-'+(i+1))]){const i=new Image();i.src='assets/wardrobe/v2/'+file+'.png'}
 render();
 
