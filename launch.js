@@ -1,6 +1,6 @@
 (()=>{
 const panel=document.getElementById('launch'),bar=panel.querySelector('[role=progressbar]'),fill=panel.querySelector('.launch-fill'),value=panel.querySelector('output'),status=panel.querySelector('.launch-status'),retry=panel.querySelector('button');
-const assets=['assets/launch-reference.webp','assets/room.webp','assets/blink-open.webp','assets/blink-half.webp','assets/blink-closed.webp','assets/home-reference.webp','assets/empty-reference.webp','assets/wardrobe/avatar-original.webp',...['room','plans','agent','bag'].map(n=>'assets/nav-'+n+'.webp')];
+const assets=['assets/launch-reference.png','assets/room.png','assets/blink-open.png','assets/blink-half.png','assets/blink-closed.png','assets/home-reference.png','assets/empty-reference.png','assets/wardrobe/avatar-original.png',...['room','plans','agent','bag'].map(n=>'assets/nav-'+n+'.png')];
 let running=false,ready=false,entering=false,autoLeft=2;
 function progress(n){bar.setAttribute('aria-valuenow',n);fill.style.width=n+'%';value.textContent=n+'%'}
 function load(src){return new Promise((resolve,reject)=>{const im=new Image();const timeout=setTimeout(()=>reject(new Error('加载超时')),30000);im.onload=()=>{clearTimeout(timeout);(im.decode?im.decode():Promise.resolve()).then(resolve,reject)};im.onerror=()=>{clearTimeout(timeout);reject(new Error('资源加载失败'))};im.src=src})}
