@@ -14,7 +14,7 @@ else if(r.action==='memory'){state.agentFlow={mode:'chat',data:{}};say('已处�
 else if(r.action==='discard'){state.agentFlow={mode:'chat',data:{}};say(r.reply)}
 else if(r.action==='adjust'){state.agentFlow={mode:'chat',data:{}};say('本版本暂未开放正式计划调整。你可以和我说说遇到的变化，我们先一起讨论，现有任务不会被修改。')}
 else{if(flow().mode==='generating')flow().mode='chat';say(r.reply)}save()}
-catch(e){state.agentFlow=(state.aiContextStart||0)===turnEpoch?before:{mode:'chat',data:{}};aiRetry=mode;say(mode==='generate'?'当前好像出了点小状况，你提供的信息已保留，点下方「重试上一条消息」再试一次。':'当前好像出了点小状况，试试重试…');track('ai_error',{reason:'request_failed',detail:e.message})}
+catch(e){state.agentFlow=(state.aiContextStart||0)===turnEpoch?before:{mode:'chat',data:{}};aiRetry=mode;say(mode==='generate'?'当前好像出了点小状况，你提供的信息已保留，点下方「重试上一条消息」再试一次。':'当前好像出了点小状况，点下方「重试上一条消息」再试一次。');track('ai_error',{reason:'request_failed',detail:e.message})}
 finally{aiBusy=false;if(route==='agent')refreshChat()}}
 chatSend=async function(text){if(aiBusy)return toast('请等 Agent 回复后再发送。');text=text.trim();if(!text)return;if(offline||!navigator.onLine)return toast('当前离线，消息未发送。');if(/^记住[:：]/.test(text)){legacyChatSend(text);return}const input=document.querySelector('#chat-input');if(input)input.value='';state.messages.push({role:'user',text:text.slice(0,1500)});save();await realTurn()};
 // Editing a draft stays a conversation, with the previous complete draft available as context.
@@ -22,6 +22,6 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-action]')?
 const priorAdjustCard=conversationCard;conversationCard=function(){let html=priorAdjustCard();const f=flow();if(f.mode==='adjust'&&f.proposedDate)html=html.replace(/name="date" type="date" value="[^"]*"/,'name="date" type="date" value="'+esc(f.proposedDate)+'"');return html};
 // Prevent goal switching/new requests while an answer is in flight.
 document.addEventListener('click',e=>{if(!aiBusy)return;const a=e.target.closest('[data-action]')?.dataset.action;if(['newGoal','agentCasual','agentDiscard','context','setContext','editPlanReview','agentEdit'].includes(a)){e.preventDefault();e.stopImmediatePropagation();toast('请等当前回复完成。')}},true);
-fetch('/api/status').then(r=>r.json()).then(s=>{aiStatus=s;if(route==='agent')refreshChat(false)}).catch(()=>{aiStatus={ready:false,message:'请双击“启动原型.cmd”启动 API 版本。'};if(route==='agent')refreshChat(false)});
+fetch(API_BASE?API_BASE+'/health':'/api/status').then(r=>r.json()).then(s=>{aiStatus=API_BASE?{ready:!!s.ok}:s;if(route==='agent')refreshChat(false)}).catch(()=>{aiStatus={ready:false,message:API_BASE?'线上服务暂时没连上，发消息可能会失败，稍后再进来试试。':'请双击“启动原型.cmd”启动 API 版本。'};if(route==='agent')refreshChat(false)});
 render();
 
