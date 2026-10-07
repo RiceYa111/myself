@@ -57,7 +57,7 @@ td:first-child,th:first-child{text-align:left}
 
 <script>
 const $=id=>document.getElementById(id);
-$('base').value=localStorage.getItem('dash-base')||'';
+$('base').value=localStorage.getItem('dash-base')||'https://myself-relay.riceya.workers.dev';
 
 function pct(a,b){return b?Math.round(a/b*100)+'%':'—'}
 function ev(day,name){return (day&&day.events&&day.events[name])||0}
