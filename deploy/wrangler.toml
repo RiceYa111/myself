@@ -10,7 +10,7 @@ ALLOWED_ORIGINS = "https://riceya111.github.io"
 PER_IP_DAILY = "30"
 GLOBAL_DAILY = "500"
 
-# KV 命名空间（限流计数 + 埋点统计用），用 wrangler kv namespace create MYSELF_KV 创建后把 id 填进来
-# [[kv_namespaces]]
-# binding = "MYSELF_KV"
-# id = "创建后得到的id"
+# KV 命名空间（限流计数 + 埋点统计用）
+[[kv_namespaces]]
+binding = "MYSELF_KV"
+id = "352f8c870e3c48bdb9ae0807e5e435c3"
