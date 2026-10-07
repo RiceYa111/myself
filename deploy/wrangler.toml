@@ -1,0 +1,16 @@
+name = "myself-relay"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+# 非密钥变量（部署前把 ALLOWED_ORIGINS 改成你的 GitHub Pages 地址）
+[vars]
+MODEL = "deepseek-chat"
+BASE_URL = "https://api.deepseek.com"
+ALLOWED_ORIGINS = "https://你的用户名.github.io"
+PER_IP_DAILY = "30"
+GLOBAL_DAILY = "500"
+
+# KV 命名空间（限流计数 + 埋点统计用），用 wrangler kv namespace create MYSELF_KV 创建后把 id 填进来
+# [[kv_namespaces]]
+# binding = "MYSELF_KV"
+# id = "创建后得到的id"

@@ -1,0 +1,16 @@
+{
+  "name": "Myself · 每一小步，都算数",
+  "short_name": "Myself",
+  "description": "你的成长，有迹可循。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#25304e",
+  "theme_color": "#25304e",
+  "icons": [
+    { "src": "assets/icons/myself-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/myself-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
+

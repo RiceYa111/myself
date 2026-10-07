@@ -1,0 +1,18 @@
+# 密钥与本机配置（绝不入库）
+model-config.json
+*.key
+secrets.*
+
+# 本地备份与日志
+备份-20261005/
+logs/
+browser-test-results.json
+
+# 测试产物
+*.log
+node_modules/
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+desktop.ini

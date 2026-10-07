@@ -1,0 +1,12 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),{validateOutput}=require('./deepseek-service.cjs');
+const input={today:'2026-10-03',goals:[]};
+const plan=()=>({action:'plan',reply:'已整理',plan:{title:'阅读',stages:[{name:'开始阅读',tasks:[{title:'阅读5页',date:'2026-10-03',scores:{gap:0,complexity:0,check:1},reward:99999}]}]}});
+test('模型不能自定义奖励金额',()=>{assert.equal(validateOutput(plan(),input).plan.stages[0].tasks[0].reward,100)});
+test('拒绝过去/无效日期及空阶段',()=>{for(const date of ['2026-10-02','2026-02-30']){const p=plan();p.plan.stages[0].tasks[0].date=date;assert.throws(()=>validateOutput(p,input))}const p=plan();p.plan.stages[0].tasks=[];assert.throws(()=>validateOutput(p,input))});
+test('拒绝不存在的调整目标',()=>{assert.throws(()=>validateOutput({reply:'改一下',action:'adjust',adjustment:{goalId:'fake'}},input))});
+test('拒绝缺少难度依据的计划',()=>{const p=plan();delete p.plan.stages[0].tasks[0].scores;assert.throws(()=>validateOutput(p,input))});const {parseReply,requestStructured}=require('./deepseek-service.cjs');
+const wrap=content=>({choices:[{finish_reason:'stop',message:{content}}]});
+test('问候JSON及代码块均可解析',()=>{for(const s of ['{"reply":"你好呀","action":"chat"}','```json\n{"reply":"你好呀","action":"chat"}\n```'])assert.equal(parseReply(wrap(s),{mode:'chat',...input}).reply,'你好呀')});
+test('空输出自动重试一次后显示真实回复',async()=>{let n=0;const call=async()=>wrap(n++?' {"reply":"你好，有什么想分享的？","action":"chat"}':'');call.input=input;const r=await requestStructured([],'chat',call);assert.equal(n,2);assert.equal(r.retries,1);assert.equal(r.output.action,'chat')});
+test('连续无效输出有界失败，不虚构回复、不创建计划',async()=>{let n=0;const call=async()=>{n++;return wrap('not-json')};call.input=input;await assert.rejects(()=>requestStructured([],'chat',call),e=>e.code==='FORMAT'&&!e.message.includes('方案'));assert.equal(n,2)});
+test('截断计划不进行修补或接受',()=>{assert.throws(()=>parseReply({choices:[{finish_reason:'length',message:{content:'{}'}}]},{mode:'generate',...input}),e=>e.code==='LENGTH')});

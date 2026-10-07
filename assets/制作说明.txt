@@ -1,0 +1,4 @@
+工具：内置 image_gen；用途：从既有效果图派生无UI的房间底图。
+参考：Myself-P0-效果图-v1/P0-01-房间首页.png。
+最终提示词：
+Use case: precise-object-edit. Turn this exact UI mockup into a clean game background asset. Remove ALL interface panels, all text, all numbers, all buttons, all navigation, all speech bubbles and the top profile portrait. Inpaint a continuous cozy pixel-art bedroom behind them. Keep the large seated brown-haired boy in cream hoodie reading on the rug in the lower third, keep warm hanging lamps, green plants, bed, window with dusk city and bookshelf. The robot may remain beside the boy but no text. Portrait 9:16, full bleed pixel art, original visual palette. No letters anywhere, no UI anywhere, no famous-character merchandise, replace recognizable creature decorations with simple plants/books. This is a background on top of which real UI will be rendered.
