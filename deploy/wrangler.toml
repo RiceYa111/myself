@@ -6,7 +6,7 @@ compatibility_date = "2026-10-01"
 [vars]
 MODEL = "deepseek-chat"
 BASE_URL = "https://api.deepseek.com"
-ALLOWED_ORIGINS = "https://riceya111.github.io"
+ALLOWED_ORIGINS = "https://riceya111.github.io,https://myself-9az.pages.dev"
 PER_IP_DAILY = "30"
 GLOBAL_DAILY = "500"
 

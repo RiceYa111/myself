@@ -1,1 +1,9 @@
-{"name":"myself-p0-prototype","version":"0.1.0","private":true,"scripts":{"start":"node server.cjs","test":"node --test tests.cjs"}}
+{
+  "name": "myself-p0-prototype",
+  "version": "0.3.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.cjs",
+    "test": "node --test tests.cjs"
+  }
+}

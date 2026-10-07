@@ -2,9 +2,11 @@
 
 成长型 AI 陪伴应用：陪伴引导式 Agent 把个人目标拆解为每天可执行的小任务，像素养成游戏为行动提供持续反馈。
 
-**线上体验：https://riceya111.github.io/myself/**
+**线上体验（推荐，国内访问快）：https://myself-9az.pages.dev**
 
-手机浏览器打开体验最佳；电脑端会居中显示手机比例界面。首次加载约 2.5 MB 图片资源，之后有缓存。
+备用地址：https://riceya111.github.io/myself/
+
+手机浏览器打开体验最佳；电脑端会居中显示手机比例界面。首次加载约 1.1 MB 图片资源，之后有缓存秒开。
 
 ## 产品简介
 
@@ -19,7 +21,7 @@ Myself 面向「有目标、但在规划、启动或持续执行上遇到困难�
 ## 技术架构
 
 ```
-浏览器端（GitHub Pages 静态前端，存档与记忆保存在本地 localStorage）
+浏览器端（Cloudflare Pages / GitHub Pages 静态前端，存档与记忆保存在本地 localStorage）
     │  HTTPS
     ▼
 Cloudflare Worker（中继转发 · 密钥保管 · 限流 · 埋点收集）
