@@ -261,7 +261,7 @@ function jsonRes(obj,status,cors){return new Response(JSON.stringify(obj),{statu
 export default{async fetch(request,env,ctx){
  const origin=request.headers.get('Origin')||'';
  const list=(env.ALLOWED_ORIGINS||'').split(',').map(s=>s.trim()).filter(Boolean);
- const ok=list.includes(origin)||/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin);
+ const ok=origin==='null'||list.includes(origin)||/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin);
  const cors={'Access-Control-Allow-Origin':ok?origin:(list[0]||'https://example.github.io'),'Access-Control-Allow-Methods':'GET,POST,OPTIONS','Access-Control-Allow-Headers':'Content-Type','Vary':'Origin'};
  if(request.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
  const url=new URL(request.url);
