@@ -79,4 +79,4 @@ document.addEventListener('submit',e=>{e.preventDefault();const f=e.target;if(f.
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal)closeModal();if(e.key==='Enter'&&e.target.matches('[data-action="expand"]'))e.target.click();if(modal&&e.key==='Tab'){const els=[...document.querySelectorAll('.dialog button,.dialog input')].filter(x=>!x.disabled),first=els[0],last=els.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
 window.addEventListener('offline',render);window.addEventListener('online',render);
 window.addEventListener('storage',e=>{if(e.key===KEY){try{state=JSON.parse(e.newValue)||state;render();toast('已同步另一窗口的本地状态。')}catch{}}});
-save();render();track('session_open',{mode:'local-prototype'});
+save();render();setTimeout(()=>track('session_open',{mode:'local-prototype'}),0);
