@@ -1,0 +1,7 @@
+{
+  "name": "myself-relay",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node server.mjs" }
+}
