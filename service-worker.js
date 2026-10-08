@@ -1,5 +1,5 @@
 /* PWA 离线壳：静态资源网络优先、失败时回退缓存；API 请求不缓存。 */
-const CACHE='myself-v4-memory';
+const CACHE='myself-v5-render';
 self.addEventListener('install',e=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(clients.claim()));
 self.addEventListener('fetch',e=>{
