@@ -53,6 +53,12 @@ td:first-child,th:first-child{text-align:left}
   <div id="funnel"></div>
 </div>
 
+<div class="funnel">
+  <h2>模块热度（今日 vs 近 7 日合计）</h2>
+  <div id="modules"></div>
+  <p class="sub" style="margin:10px 0 0">条形按近 7 日合计排序 · 换装穿戴/商城购装/任务卡兑换三个事件 10-08 起开始累积，历史无数据</p>
+</div>
+
 <div class="section-title">近 7 天趋势</div>
 <table id="trend"></table>
 
@@ -108,6 +114,23 @@ function render(data){
     return `<div class="frow"><div class="label">${s[0]}</div><div class="bar" style="width:${Math.round(s[1]/max*52)}%"></div><div class="num">${s[1]} ${rate?'<span style="color:var(--muted)">'+rate+'</span>':''}</div></div>`;
   }).join('');
 
+  // 模块热度：今日 vs 近7日合计，按7日合计降序
+  const mods=[
+    ['Agent 对话','chat_turn'],
+    ['换装预览','outfit_preview'],
+    ['穿戴保存','outfit_save'],
+    ['商城购装','purchase_success'],
+    ['任务卡兑换','card_exchange'],
+    ['计划创建','create_success'],
+    ['任务完成','complete_success'],
+    ['成长回顾','growth_recap_open'],
+  ].map(m=>{
+    const week=dates.reduce((n,d)=>n+ev(days[d],m[1]),0);
+    return [m[0],ev(today,m[1]),week];
+  }).sort((a,b)=>b[2]-a[2]);
+  const mmax=Math.max(...mods.map(m=>m[2]),1);
+  $('modules').innerHTML=mods.map(m=>`<div class="frow"><div class="label">${m[0]}</div><div class="bar" style="width:${Math.max(Math.round(m[2]/mmax*52),m[2]?1:0)}%"></div><div class="num">${m[1]} 今日 <span style="color:var(--muted)">· ${m[2]} / 7日</span></div></div>`).join('');
+
   $('trend').innerHTML='<tr><th>日期</th><th>会话</th><th>新访客</th><th>回头客</th><th>聊天轮次</th><th>创建目标</th><th>完成任务</th><th>AI失败</th></tr>'+
     dates.map(d=>{const x=days[d]||{events:{}};return `<tr><td>${d}</td><td>${x.sessions||0}</td><td>${x.newUsers||0}</td><td>${x.returningUsers||0}</td><td>${ev(x,'chat_turn')}</td><td>${ev(x,'create_success')}</td><td>${ev(x,'complete_success')}</td><td>${ev(x,'ai_error')}</td></tr>`}).join('');
 }
@@ -128,7 +151,7 @@ async function load(){
 }
 
 function demo(){
-  const mk=(s,n,r,chat,plan,create,done,greet,aiErr)=>({sessions:s,newUsers:n,returningUsers:r,events:{agent_greeting_shown:greet,chat_turn:chat,plan_draft_generated:plan,create_success:create,complete_success:done,ai_response:chat*1-aiErr,ai_error:aiErr,page_view:s*3,outfit_preview:Math.round(s*.4)}});
+  const mk=(s,n,r,chat,plan,create,done,greet,aiErr)=>({sessions:s,newUsers:n,returningUsers:r,events:{agent_greeting_shown:greet,chat_turn:chat,plan_draft_generated:plan,create_success:create,complete_success:done,ai_response:chat*1-aiErr,ai_error:aiErr,page_view:s*3,outfit_preview:Math.round(s*1.2),outfit_save:Math.round(s*.5),purchase_success:Math.round(s*.3),card_exchange:Math.round(s*.1),growth_recap_open:Math.round(s*.2)}});
   render({days:{
     '2026-10-07':mk(42,28,2,96,20,12,7,38,3),
     '2026-10-08':mk(65,40,6,160,34,19,11,60,4),
