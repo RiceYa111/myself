@@ -79,8 +79,13 @@ function render(data){
   const aiOk=ev(today,'ai_response'),aiErr=ev(today,'ai_error');
   const aiRate=(aiOk+aiErr)?Math.round(aiOk/(aiOk+aiErr)*100)+'%':'—';
 
+  const ns=data.northStar;
+  const nsRate=(a,b)=>b?Math.round(a/b*100)+'%':'—';
   $('cards').innerHTML=[
+    ['⭐ 首次行动转化率',ns?nsRate(ns.firstAction.converted,ns.firstAction.observed):'—',ns?('首建24h内完成任务 · 观察'+ns.firstAction.observed+'人 · 转化'+ns.firstAction.converted+'人'):'数据累积中','gold'],
+    ['⭐ 7日持续行动率',ns?nsRate(ns.sevenDay.retained,ns.sevenDay.observed):'—',ns?('首建起7日内≥3天有行动 · 观察'+ns.sevenDay.observed+'人 · 留存'+ns.sevenDay.retained+'人'):'数据累积中','gold'],
     ['今日会话',today.sessions||0,'用户打开应用的次数','mint'],
+
     ['独立访客',visitors,'新 '+(''+(today.newUsers||0))+' · 回头 '+(''+(today.returningUsers||0)),'mint'],
     ['开口率',pct(chatSess,today.sessions),'聊过天的会话占比 · 10-09起按新口径','gold'],
     ['计划转化率',pct(creates,today.sessions),'创建目标的会话占比','gold'],

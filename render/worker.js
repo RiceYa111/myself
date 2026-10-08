@@ -304,6 +304,19 @@ export default{async fetch(request,env,ctx){
       else if(first<day)cur.returningUsers=(cur.returningUsers||0)+1;
      }
     }
+    // 北极星指标（2026-10-08）：按 uid 记录首次创建日期与有完成记录的日期集合
+    // 用于首次行动转化率（24h内完成）与 7日持续行动率（7日内≥3天有完成），只存日期标记，不含内容
+    if(uid&&(Number(body.counts?.create_success)>0||Number(body.counts?.complete_success)>0)){
+     if(Number(body.counts?.create_success)>0&&!(await env.MYSELF_KV.get('ns:fc:'+uid))){
+      await env.MYSELF_KV.put('ns:fc:'+uid,day,{expirationTtl:7776000});
+      const cl=JSON.parse(await env.MYSELF_KV.get('ns:creators')||'[]');
+      if(!cl.includes(uid)){cl.push(uid);await env.MYSELF_KV.put('ns:creators',JSON.stringify(cl),{expirationTtl:7776000})}
+     }
+     if(Number(body.counts?.complete_success)>0){
+      const dd=JSON.parse(await env.MYSELF_KV.get('ns:dd:'+uid)||'[]');
+      if(!dd.includes(day)){dd.push(day);await env.MYSELF_KV.put('ns:dd:'+uid,JSON.stringify(dd),{expirationTtl:7776000})}
+     }
+    }
     await env.MYSELF_KV.put(key,JSON.stringify(cur),{expirationTtl:2592000});
    }catch{}})());}
   return jsonRes({ok:true},200,cors);
@@ -313,7 +326,22 @@ export default{async fetch(request,env,ctx){
   if(env.STATS_TOKEN&&url.searchParams.get('token')!==env.STATS_TOKEN)return jsonRes({error:'无权限'},403,cors);
   const days={};
   if(env.MYSELF_KV)for(let i=0;i<7;i++){const d=new Date(Date.now()-i*864e5).toISOString().slice(0,10);days[d]=JSON.parse(await env.MYSELF_KV.get('stats:'+d)||'null')}
-  return jsonRes({generated:new Date().toISOString(),days},200,cors);
+  // 北极星指标计算：首次行动转化率（首建后24h内≥1次完成，按自然日近似）；7日持续行动率（首建起7个自然日内≥3天有完成）
+  let northStar=null;
+  if(env.MYSELF_KV){try{
+   const creators=JSON.parse(await env.MYSELF_KV.get('ns:creators')||'[]');
+   const today=new Date().toISOString().slice(0,10);
+   const addDays=(d,n)=>new Date(Date.parse(d+'T12:00:00Z')+n*864e5).toISOString().slice(0,10);
+   let obs24=0,conv24=0,obs7=0,ret7=0;
+   for(const u of creators.slice(0,500)){
+    const fc=await env.MYSELF_KV.get('ns:fc:'+u);if(!fc)continue;
+    const dd=JSON.parse(await env.MYSELF_KV.get('ns:dd:'+u)||'[]');
+    if(addDays(fc,1)<today){obs24++;if(dd.some(d=>d<=addDays(fc,1)))conv24++}
+    if(addDays(fc,7)<=today){obs7++;if(new Set(dd.filter(d=>d>=fc&&d<=addDays(fc,6))).size>=3)ret7++}
+   }
+   northStar={firstAction:{converted:conv24,observed:obs24},sevenDay:{retained:ret7,observed:obs7}};
+  }catch{}}
+  return jsonRes({generated:new Date().toISOString(),days,northStar},200,cors);
  }
  return jsonRes({error:'Not found'},404,cors);
 }};
