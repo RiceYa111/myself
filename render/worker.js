@@ -309,8 +309,8 @@ export default{async fetch(request,env,ctx){
   return jsonRes({ok:true},200,cors);
  }
  if(url.pathname==='/api/stats'&&request.method==='GET'){
-  // 免密查看（2026-10-07 应产品负责人要求）：仅含匿名计数，无聊天内容等敏感数据。如需加锁，在 Worker 环境变量设置 STATS_TOKEN 后取消下一行注释。
-  // if(!env.STATS_TOKEN||url.searchParams.get('token')!==env.STATS_TOKEN)return jsonRes({error:'无权限'},403,cors);
+  // 看板加锁（2026-10-08 应产品负责人要求）：环境变量 STATS_TOKEN 一经设置，必须带 ?token= 才能查看；未设置时保持开放，避免部署间隙锁死
+  if(env.STATS_TOKEN&&url.searchParams.get('token')!==env.STATS_TOKEN)return jsonRes({error:'无权限'},403,cors);
   const days={};
   if(env.MYSELF_KV)for(let i=0;i<7;i++){const d=new Date(Date.now()-i*864e5).toISOString().slice(0,10);days[d]=JSON.parse(await env.MYSELF_KV.get('stats:'+d)||'null')}
   return jsonRes({generated:new Date().toISOString(),days},200,cors);
