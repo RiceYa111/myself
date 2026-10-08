@@ -39,7 +39,7 @@ td:first-child,th:first-child{text-align:left}
 <p class="sub">首次上线核心指标 · 数据来自 Cloudflare Worker（仅计数，不含任何聊天内容）</p>
 
 <div class="setup">
-  <input id="base" placeholder="Worker 地址，如 https://myself-relay.xxx.workers.dev">
+  <input id="base" placeholder="中转服务地址，默认 https://myself-relay.onrender.com">
   <button onclick="load()">加载数据</button>
   <button class="ghost" onclick="demo()">先看演示数据</button>
   <div class="err" id="err"></div>
@@ -57,7 +57,10 @@ td:first-child,th:first-child{text-align:left}
 
 <script>
 const $=id=>document.getElementById(id);
-$('base').value=localStorage.getItem('dash-base')||'https://myself-relay.riceya.workers.dev';
+let savedBase=localStorage.getItem('dash-base')||'';
+// 2026-10-08 中转层迁移 Render：清掉旧 Cloudflare 地址的缓存
+if(savedBase.includes('workers.dev')){savedBase='';localStorage.removeItem('dash-base')}
+$('base').value=savedBase||'https://myself-relay.onrender.com';
 
 function pct(a,b){return b?Math.round(a/b*100)+'%':'—'}
 function ev(day,name){return (day&&day.events&&day.events[name])||0}
