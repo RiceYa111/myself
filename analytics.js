@@ -4,7 +4,7 @@
 'use strict';
 const BASE=(['127.0.0.1','localhost'].includes(location.hostname))?'':(window.MYSELF_API_BASE||'');
 const counts={};let chatTurns=0,pending=0;
-window.reportEvent=function(name){counts[name]=(counts[name]||0)+1;if(name==='ai_response')chatTurns++;if(++pending>=15){pending=0;flush(false)}};
+window.reportEvent=function(name){counts[name]=(counts[name]||0)+1;if(name==='ai_response'){if(!chatTurns)counts['chat_session']=1;chatTurns++};if(++pending>=15){pending=0;flush(false)}};
 function flush(end){
  if(!BASE)return;
  if(!Object.keys(counts).length&&!end)return;

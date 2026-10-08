@@ -73,7 +73,7 @@ function render(data){
   const today=days[dates[0]]||{sessions:0,events:{},newUsers:0,returningUsers:0};
   const e=today.events||{};
   const visitors=(today.newUsers||0)+(today.returningUsers||0);
-  const chats=ev(today,'chat_turn');
+  const chats=ev(today,'chat_turn'),chatSess=ev(today,'chat_session');
   const creates=ev(today,'create_success');
   const completes=ev(today,'complete_success');
   const aiOk=ev(today,'ai_response'),aiErr=ev(today,'ai_error');
@@ -82,7 +82,7 @@ function render(data){
   $('cards').innerHTML=[
     ['今日会话',today.sessions||0,'用户打开应用的次数','mint'],
     ['独立访客',visitors,'新 '+(''+(today.newUsers||0))+' · 回头 '+(''+(today.returningUsers||0)),'mint'],
-    ['开口率',pct(chats,today.sessions),'聊过天的会话占比 · 最关键指标','gold'],
+    ['开口率',pct(chatSess,today.sessions),'聊过天的会话占比 · 10-09起按新口径','gold'],
     ['计划转化率',pct(creates,today.sessions),'创建目标的会话占比','gold'],
     ['任务完成数',completes,'完成率 '+pct(completes,creates),'mint'],
     ['AI 成功率',aiRate,'失败 '+aiErr+' 次 · 健康线 95%','gold'],
@@ -91,7 +91,7 @@ function render(data){
   const steps=[
     ['打开应用',today.sessions||0],
     ['看到开场白',ev(today,'agent_greeting_shown')],
-    ['开始聊天',chats],
+    ['开口对话',chatSess||chats],
     ['生成计划',ev(today,'plan_draft_generated')],
     ['确认创建目标',creates],
     ['完成任务',completes],

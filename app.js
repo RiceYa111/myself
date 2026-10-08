@@ -52,7 +52,7 @@ case 'showGoal':filter=goal(d.g).status;expanded=d.g;go('plans');break;
 case 'task':taskRef={g:d.g,t:d.t};go('task');break;
 case 'homeStart':if(transact('start',{goalId:d.g,taskId:d.t})){taskRef={g:d.g,t:d.t};go('task')}break;
 case 'startTask':case 'pauseTask':if(transact(a==='startTask'?'start':'pauseAction',{goalId:d.g,taskId:d.t}))render();break;
-case 'completeTask':{const r=transact('complete',{goalId:d.g,taskId:d.t,version:Number(d.version)});if(r&&!r.duplicate){reward=r.result;go('success')}break;}
+case 'completeTask':{const r=transact('complete',{goalId:d.g,taskId:d.t,version:Number(d.version)});if(r&&!r.duplicate){reward=r.result;track('complete_success');go('success')}break;}
 case 'pauseGoal':openModal('暂停这个目标？','<p>保留当前进度与奖励，不再安排新的行动提醒；仍占用一个目标名额。正在进行的行动会一并暂停。</p><p class="caption">如果原计划日期不再合适，可在暂停后调整计划。</p>',()=>{if(transact('pause',{goalId:d.g})){closeModal();filter='paused';expanded=d.g;render()}},'确认暂停');break;
 case 'resumeGoal':if(transact('resume',{goalId:d.g})){filter='active';render();toast('目标已恢复，不扣任务卡。')}break;
 case 'cancelGoal':openModal('取消这个目标？',`<p>取消后从进行中列表移出，释放名额。已获得奖励保留，不退任务卡，也不再结算后续任务。</p><p class="caption">本月剩余取消 ${qleft('cancel')}/2 次。每个目标可撤回一次，撤回不返还取消次数。</p>`,()=>{if(transact('cancel',{goalId:d.g})){closeModal();filter='cancelled';expanded=d.g;render();toast('目标已取消，可在已取消分类中查看。')}},'确认取消',true);break;
