@@ -71,6 +71,7 @@ function validateOutput(o,input){
   result.plan={title:str(p.title,60),foundation:str(p.foundation,300),time:str(p.time,300),obstacle:str(p.obstacle,300),stages,date:first,days:Math.round((new Date(prev)-new Date(first))/86400000)+1,action:stages[0].tasks[0].title,configVersion:'prd-6.3-v2'};
  }
  if(o.action==='adjust'){
+  const scope=input.draft?.data?.adjustmentScope,a0=o.adjustment;if(scope&&(!a0||a0.goalId!==scope.goalId||a0.version!==scope.version||!Array.isArray(a0.taskIds)||a0.taskIds.length!==scope.taskIds.length||a0.taskIds.some(id=>!scope.taskIds.includes(id))))throw new ApiError('ADJUST','调整范围与用户选择不一致');
   const a=o.adjustment,g=(input.goals||[]).find(g=>g.id===a?.goalId);
   if(Array.isArray(a?.tasks)){
    try{const proposal={goalId:a.goalId,version:a.version,taskIds:a.taskIds,tasks:a.tasks.map(t=>({title:str(t.title,160),date:str(t.date,10),stage:Number.isInteger(t.stage)?t.stage:undefined,acceptance:str(t.acceptance,400),outcomeKey:str(t.outcomeKey,120)}))};const checked=R.replacements(g,proposal,input.today);result.adjustment={...proposal,tasks:checked.tasks,budget:checked.budget};}catch(e){throw new ApiError('ADJUST',e.message)}
@@ -101,6 +102,7 @@ async function requestStructured(messages,mode,call){
 function turnPolicy(input){
  const latest=input.messages.filter(m=>m.role==='user').at(-1)?.content.trim()||'';
  if(input.mode!=='chat')return '';
+ if(input.draft?.data?.adjustmentScope)return '本轮是已有目标的选定范围调整。仅可chat或adjust；先沟通修改方向，用户同意后输出adjustment，严格使用adjustmentScope的goalId/version/taskIds，不新建目标、不扣卡，最终等待用户界面确认。';
  if(/^(早|早安|早上好|上午好|中午好|下午好|晚上好|晚安|你好|嗨|哈喽|hello|hi)[呀啊哦～~！!。\s]*$/i.test(latest))return '本轮是纯问候，action必须chat。只简短自然回应问候，最多一句轻松关心，不提报告、任务、安排、计划，也不复述历史约定。即使上一轮正在规划也暂停推进，等用户主动继续。';
  if(/(不想|不要|先不|不愿).{0,4}(谈|聊|说)/.test(latest))return '本轮拒绝继续原话题，action必须chat。不复述原目标、不催促、不告别，不要求用户换话题、不起新话题、不抛新问题，只简单表示愿意倾听（如"行，那不聊这个。我在这儿，你想说的时候随时开口"）。';
  if(/不会|不知道.{0,5}(做|选|开始)|卡住/.test(latest))return '用户表达能力或选择障碍。先提供针对障碍的一点具体帮助，再最多问一个信息点；忌口和想吃什么是两个问题，不可合并追问。不得仅安慰后继续盘问时间人数。';
