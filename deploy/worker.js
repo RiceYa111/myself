@@ -486,7 +486,7 @@ export default{async fetch(request,env,ctx){
   const day=new Date().toISOString().slice(0,10),ip=request.headers.get('CF-Connecting-IP')||'unknown';
   const gk='g:'+day,ik='ip:'+day+':'+ip;let g=0,i=0;
   if(env.MYSELF_KV){try{const [gv,iv]=await Promise.all([env.MYSELF_KV.get(gk),env.MYSELF_KV.get(ik)]);g=Number(gv||0);i=Number(iv||0)}catch{}}
-  if(i>=(Number(env.PER_IP_DAILY)||30))return jsonRes({error:'今天已经聊了很多轮啦，明天再来找我吧～',code:'DAILY_LIMIT'},429,cors);
+  if(i>=(Number(env.PER_IP_DAILY)||30))return jsonRes({error:'今天已经聊到上限啦，明早8点额度会重置，到时候再来找我吧～',code:'DAILY_LIMIT'},429,cors);
   if(g>=(Number(env.GLOBAL_DAILY)||500))return jsonRes({error:'今日体验名额用完啦，明天再来吧～',code:'DAILY_LIMIT'},429,cors);
   let body;try{body=await request.json()}catch{return jsonRes({error:'请求格式不正确。'},400,cors)}
   ENV=env;
